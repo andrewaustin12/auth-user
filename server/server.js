@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express';
 const app = express();
 
 //dotenv
@@ -10,6 +10,13 @@ import connectDB from './db/connect.js';
 
 //route
 import authRoute from './routes/authRoute.js';
+
+//morgan
+
+import morgan from 'morgan';
+if(process.env.NODE_ENV !== 'production'){
+  app.use(morgan('dev'))
+}
 
 app.use(express.json());
 

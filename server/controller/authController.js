@@ -15,7 +15,26 @@ const register = async(req,res) => {
 };
 
 const login = async(req,res) => {
-  res.send('login')
+  const {email,password} =req.body
+
+  if(!email || !password) {
+    res.status(500).json({msg:"please provide all values"})
+  }
+  const user = await User.findOne({email}).select('+password')
+
+  if(!user){
+    res.status(500).json({msg:'Invalid credentials'})
+  }
+
+  const isCorrect = await user.comparePassword
+
+  if(!isCorrect) {
+    res.status(500).json({msg:'Invalid credentials'})
+  }
+
+  const token = user.createJWT()
+  user.password = undefined
+  res.status(201).json({user,token})
 };
 
 export {register,login};
