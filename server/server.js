@@ -24,6 +24,10 @@ app.get('/', (req,res) => {
   res.send('Welcome')
 });
 
+app.get('/api/v1',(req,res) => {
+  res.json({msg:'Here'})
+});
+
 app.use('/api/v1/auth',authRoute)
 
 const port = process.env.PORT || 5004
