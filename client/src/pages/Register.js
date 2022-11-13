@@ -1,6 +1,8 @@
 import React, { useEffect,useState } from 'react';
 import FormInput from '../components/FormInput';
+import { REGISTER_USER_BEGIN } from '../context/actions';
 import { useAppContext } from '../context/appContext';
+import {useNavigate} from 'react-router-dom';
 
 const initialState = {
   name: '',
@@ -12,6 +14,9 @@ const initialState = {
 const Register = () => {
   
   const [values,setValues] = useState(initialState);
+
+  const {registerUser,user} = useAppContext();
+  const navigate = useNavigate();
 
   const handleChange = e => {
     setValues({...values,[e.target.name]:e.target.value})
@@ -29,8 +34,22 @@ const Register = () => {
     if(!email || !password || (!isMember && !name)){
       return
     }
-      console.log(values)
+      const currentUser = {name, email, password}
+
+      if(isMember){
+        console.log('already a member')
+      } else {
+        registerUser(currentUser)
+      }
   }
+
+  useEffect(() => {
+    if(user) {
+      setTimeout(() => {
+        navigate('/')
+      },3000)
+    }
+  },[user,navigate])
 
   return (
     <div>
