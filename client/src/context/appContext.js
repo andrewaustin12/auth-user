@@ -3,8 +3,11 @@ import { REGISTER_USER_BEGIN, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, LOGIN_
 import reducer from "./reducers";
 import axios from 'axios';
 
+const token = localStorage.getItem('token');
+const user = localStorage.getItem('user')
+
 const initailState = {
-  user: null,
+  user: user ? JSON.parse(user) : null,
   token: null
 }
 
@@ -40,6 +43,9 @@ const AppProvider = ({children}) => {
           token
         }
       })
+
+      addUserToLocal({user,token})
+
     } catch(error) {
       console.log(error.response)
       dispatch({
@@ -49,8 +55,30 @@ const AppProvider = ({children}) => {
     }
   }
 
+  const loginUser = async(currentUser) => {
+    dispatch({type:LOGIN_USER_BEGIN})
+
+    try{
+      const {data} = await axios.post('/api/v1/auth/login',currentUser)
+      const {user,token} = data
+
+      dispatch({
+        type:LOGIN_USER_SUCCESS,
+        payload:{user,token}
+      })
+
+      addUserToLocal({user,token})
+
+    } catch(error) {
+      dispatch({
+        type:LOGIN_USER_ERROR,
+        payload:{msg: error.response.data.msg}
+      })
+    }
+  }
+
   return(
-    <AppContext.Provider value={{...state,registerUser}}>
+    <AppContext.Provider value={{...state,registerUser,loginUser}}>
       {children}
     </AppContext.Provider>
   )

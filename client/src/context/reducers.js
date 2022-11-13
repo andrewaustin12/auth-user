@@ -18,6 +18,23 @@ const reducer = (state,action) => {
     return{...state}
   }
 
+  if(action.type === LOGIN_USER_BEGIN) {
+    return{...state}
+  }
+
+  if(action.type === LOGIN_USER_SUCCESS) {
+    return {
+      ...state,
+      user:action.payload.user,
+      token:action.payload.token
+    }
+  }
+
+  if(action.type === LOGIN_USER_ERROR) {
+    return{...state}
+  }
+
+
   throw new Error(`no such action ${action.type}`)
 }
 
